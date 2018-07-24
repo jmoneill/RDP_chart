@@ -1,0 +1,39 @@
+---
+title: "California Domestic Partnerships"
+output: html_notebook
+---
+
+```{r}
+## Load Packages and Clean up the Data File
+library("tidyverse")
+library("reshape2")
+library("ggfortify")
+```
+
+```{r}
+ca_rdp <- read.csv("ca_rdp.csv")
+ca_rdp$Total <- NULL
+ca_rdp$X <- NULL
+
+dummy.df <- as.data.frame(ca_rdp)
+months <- format(seq.Date(as.Date("2013-01-01"), as.Date("2013-12-01"), 
+                          by = "month"), format = "%b")
+colnames(dummy.df) <- months
+dummy.df$Year <- seq(2000, 2018) # set as variable, not as rownames 
+
+dummy.df <- melt(dummy.df, id.vars = "Year")
+dummy.df$Date <- as.Date(paste(dummy.df$Year, dummy.df$variable, "01", sep = "-"), format = ("%Y-%b-%d"))
+dummy.df <- dummy.df[order(dummy.df$Date), ]
+rdp.ts <- ts(dummy.df$value, start = c(2000,1), end=c(2018,2), frequency=12)
+```
+
+```{r}
+ggplot(dummy.df, aes(x = Date, y = value)) +
+  geom_line() +
+  ggtitle("California Registered Domestic Partnerships 2000-2018") +
+  xlab("Date") + 
+  ylab("Domestic Partnerships Registered") +
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
