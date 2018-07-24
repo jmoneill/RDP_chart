@@ -35,5 +35,7 @@ ggplot(dummy.df, aes(x = Date, y = value)) +
   ylab("Domestic Partnerships Registered") +
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("ca_rdp_plot.jpg")
 ```
 
